@@ -77,13 +77,13 @@ pub fn instancia_unica() {
 	match std::net::TcpListener::bind("0.0.0.0:6427") {
 		Ok(listener) => {
 			#[cfg(debug_assertions)]
-			println!("{} Validación de instancia correcta", crate::librerias::tiempo::ahora_log());
+			println!("{} Validación de instancia correcta", crate::tiempo::ahora_log());
 			std::thread::spawn(move || {
 				for _stream in listener.incoming() { //PUNTO DE ESPERA PARA CONEXIONES ENTRANTES
 					//Desechamos por que este puerto solo tiene el fin de ser apartado, no se procesará nada.....
 				}
 				#[cfg(debug_assertions)]
-				println!("{} Se acabó validación de instancia", crate::librerias::tiempo::ahora_log());
+				println!("{} Se acabó validación de instancia", crate::tiempo::ahora_log());
 			});
 		}
 		Err(e) => {
