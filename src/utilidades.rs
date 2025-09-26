@@ -14,7 +14,7 @@ pub type ArcMutex<T> = Arc<Mutex<T>>;
 pub trait ParaArcMutex<T> {
 	fn nuevo(t: T) -> ArcMutex<T>;
 	fn nuevo_default() -> ArcMutex<T> where T: Default;
-	fn bloquear(&self) -> MutexGuard<T>;
+	fn bloquear(&self) -> MutexGuard<'_, T>;
 }
 
 impl <T>ParaArcMutex<T> for ArcMutex<T> {
@@ -24,7 +24,7 @@ impl <T>ParaArcMutex<T> for ArcMutex<T> {
 	fn nuevo_default() -> ArcMutex<T> where T: Default {
 		Arc::new(Mutex::new(Default::default()))
 	}
-	fn bloquear(&self) -> MutexGuard<T> {
+	fn bloquear(&self) -> MutexGuard<'_, T> {
 		self.lock().unwrap_or_else(|e|e.into_inner())
 	}
 }

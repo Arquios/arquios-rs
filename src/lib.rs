@@ -4,17 +4,23 @@ pub mod utilidades;
 #[macro_use]
 extern crate serde_derive;
 
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
-}
-
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use chrono::NaiveDate;
+    use crate::tiempo::{Diccionario, FormatosFecha};
 
     #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+    fn fecha_diccionario() {
+        const MESES: [&str; 12] = [ "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" ];
+
+        struct SistemaDiccionario {}
+        impl Diccionario for SistemaDiccionario {
+            fn traduccion_mes_abr(&self, mes: u32) -> &str {
+                MESES[mes as usize - 1]
+            }
+        }
+        let diccionario = SistemaDiccionario {};
+        let fecha = NaiveDate::from_ymd_opt(2015, 7, 22).unwrap();
+        println!("{:?} {}", fecha, fecha.to_string_ddmmmaa(diccionario));
     }
 }

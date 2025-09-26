@@ -1,9 +1,6 @@
 use std::str::FromStr;
 use chrono::{DateTime, Datelike, Duration, Local, NaiveDate, NaiveDateTime, NaiveTime};
 
-pub const MESES_MINI: [&str; 12] = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
-//const DS_MINI: [&str; 7] = ["Lun", "Mar", "Mie", "Jue", "Vie", "Sab", "Dom"];
-
 // FORMATOS: https://docs.rs/chrono/0.4.15/chrono/format/strftime/index.html#specifiers
 
 /// Fecha y/u Hora actual
@@ -24,22 +21,27 @@ pub fn ahora_log() -> String {
 	Local::now().format("[%F %T] ").to_string()
 }
 
+pub trait Diccionario {
+	///Recibe el número de mes (1-12) y debe regresar el nombre, sirve si es un idioma distinto
+	fn traduccion_mes_abr(&self, mes: u32) -> &str;
+}
+
 pub trait FormatosFecha {
-	fn to_string_ddmmmaa(&self) -> String;
+	fn to_string_ddmmmaa<T: Diccionario>(&self, dicc: T) -> String;
 }
 
 impl FormatosFecha for NaiveDate {
-	fn to_string_ddmmmaa(&self) -> String {
-		format!("{} {} {}", self.day(), MESES_MINI[(self.month() - 1) as usize], self.year())
+	fn to_string_ddmmmaa<T: Diccionario>(&self, dicc: T) -> String {
+		format!("{} {} {}", self.day(), dicc.traduccion_mes_abr(self.month()), self.year())
 	}
 }
 
-pub fn fecha_str_ddmmmaa(f: &String) -> String {
+pub fn fecha_str_ddmmmaa<T: Diccionario>(f: &String, dicc: T) -> String {
 	if f == "" {
 		return "-------".to_owned();
 	}
 	match NaiveDate::from_str(f) {
-		Ok(f) => f.to_string_ddmmmaa(),
+		Ok(f) => f.to_string_ddmmmaa(dicc),
 		Err(_) => "-------".to_string()
 	}
 }
@@ -71,25 +73,25 @@ pub fn hora_hhmm_ampm(t: &String) -> String {
 
 
 pub trait FormatosFechaHora {
-	fn to_string_ddmmmaa_hhmm(&self) -> String;
-	fn to_string_ddmmmaa_hhmmss(&self) -> String;
+	fn to_string_ddmmmaa_hhmm<T: Diccionario>(&self, dicc: T) -> String;
+	fn to_string_ddmmmaa_hhmmss<T: Diccionario>(&self, dicc: T) -> String;
 }
 
 impl FormatosFechaHora for DateTime<Local> {
-	fn to_string_ddmmmaa_hhmm(&self) -> String {
-		format!("{}  {}", self.date_naive().to_string_ddmmmaa(), self.time().to_string_hhmm())
+	fn to_string_ddmmmaa_hhmm<T: Diccionario>(&self, dicc: T) -> String {
+		format!("{}  {}", self.date_naive().to_string_ddmmmaa(dicc), self.time().to_string_hhmm())
 	}
-	fn to_string_ddmmmaa_hhmmss(&self) -> String {
-		format!("{}  {}", self.date_naive().to_string_ddmmmaa(), self.time().to_string_hhmmss())
+	fn to_string_ddmmmaa_hhmmss<T: Diccionario>(&self, dicc: T) -> String {
+		format!("{}  {}", self.date_naive().to_string_ddmmmaa(dicc), self.time().to_string_hhmmss())
 	}
 }
 
 impl FormatosFechaHora for NaiveDateTime {
-	fn to_string_ddmmmaa_hhmm(&self) -> String {
-		format!("{}  {}", self.date().to_string_ddmmmaa(), self.time().to_string_hhmm())
+	fn to_string_ddmmmaa_hhmm<T: Diccionario>(&self, dicc: T) -> String {
+		format!("{}  {}", self.date().to_string_ddmmmaa(dicc), self.time().to_string_hhmm())
 	}
-	fn to_string_ddmmmaa_hhmmss(&self) -> String {
-		format!("{}  {}", self.date().to_string_ddmmmaa(), self.time().to_string_hhmmss())
+	fn to_string_ddmmmaa_hhmmss<T: Diccionario>(&self, dicc: T) -> String {
+		format!("{}  {}", self.date().to_string_ddmmmaa(dicc), self.time().to_string_hhmmss())
 	}
 }
 
