@@ -9,3 +9,5 @@ rust_decimal = "1.38"
 chrono = { version = "0.4", features = [ "serde" ] }
 serde = "1.0"
 serde_derive = "1.0"
+serde_json = { version = "1.0", features = [ "preserve_order" ] }
+minreq = { version = "2.14", features = [ "https", "json-using-serde" ] }
