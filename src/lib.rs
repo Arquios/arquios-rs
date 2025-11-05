@@ -10,7 +10,6 @@ pub type Resultado<T> = Result<T, String>;
 #[cfg(test)]
 mod tests {
     use chrono::NaiveDate;
-    use crate::Resultado;
     use crate::tiempo::{Diccionario, FormatosFecha};
     use crate::ws::peticion_raw_get;
 
