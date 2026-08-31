@@ -73,8 +73,8 @@ pub fn version_superior(nueva: &str, actual: &str) -> bool {
 /// 	- bloquear archivo.... si bueno... no funciona si lo corres desde otra carpeta...
 /// 	- listado de procesos.... bueno necesitas el permiso para ver los procesos...
 /// 	- compartir variable en memoria... no me funcionó en algunos sistemas....
-pub fn instancia_unica() {
-	match std::net::TcpListener::bind("0.0.0.0:6427") {
+pub fn instancia_unica(puerto: Option<u16>) {
+	match std::net::TcpListener::bind(format!("0.0.0.0:{}", puerto.unwrap_or_else(||6427))) {
 		Ok(listener) => {
 			#[cfg(debug_assertions)]
 			println!("{} Validación de instancia correcta", crate::tiempo::ahora_log());
